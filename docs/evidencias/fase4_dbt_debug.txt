@@ -1,0 +1,25 @@
+01:21:17  Running with dbt=1.8.8
+01:21:17  dbt version: 1.8.8
+01:21:17  python version: 3.11.9
+01:21:17  python path: C:\DataBricks\.venv\Scripts\python.exe
+01:21:17  os info: Windows-10-10.0.26200-SP0
+01:21:20  Using profiles dir at .
+01:21:20  Using profiles.yml file at .\profiles.yml
+01:21:20  Using dbt_project.yml file at C:\DataBricks\dbt\bolsa_familia\dbt_project.yml
+01:21:20  adapter type: databricks
+01:21:20  adapter version: 1.8.4
+01:21:20  Configuration:
+01:21:20    profiles.yml file [OK found and valid]
+01:21:20    dbt_project.yml file [OK found and valid]
+01:21:20  Required dependencies:
+01:21:20   - git [OK found]
+
+01:21:20  Connection:
+01:21:20    host: dbc-0d469779-02c7.cloud.databricks.com
+01:21:20    http_path: /sql/1.0/warehouses/95b3f51a9621f9dc
+01:21:20    catalog: main
+01:21:20    schema: bolsa_familia
+01:21:20  Registered adapter: databricks=1.8.4
+01:22:05    Connection test: [OK connection ok]
+
+01:22:05  All checks passed!

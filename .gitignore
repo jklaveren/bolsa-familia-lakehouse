@@ -1,0 +1,41 @@
+# Dados (volume + LGPD — nunca versionar)
+data/raw/**
+data/bronze/
+data/silver/
+data/gold/
+*.csv
+*.zip
+!data/.gitkeep
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Spark / Delta / Airflow
+metastore_db/
+*.log
+logs/
+
+# dbt
+dbt/bolsa_familia/target/
+dbt/bolsa_familia/dbt_packages/
+dbt/bolsa_familia/logs/
+
+# Terraform (estado e cache nunca entram)
+.terraform/
+*.tfstate
+*.tfstate.*
+
+# Segredos
+.env
+*.pem
+*service-account*.json
+credentials.json
+
+# MLflow local
+mlruns/
+mlruns-local/

@@ -1,0 +1,27 @@
+version: 2
+
+sources:
+  - name: silver
+    schema: bolsa_familia
+    tables:
+      - name: pagamentos
+        description: >
+          Tabela Delta da camada Silver — pagamentos do Novo Bolsa Familia,
+          tipados, deduplicados e com NIS/nome pseudonimizados (Secao 7.2).
+        columns:
+          - name: mes_competencia
+            description: Primeiro dia do mes de competencia do arquivo
+          - name: mes_referencia
+            description: Primeiro dia do mes a que a parcela se refere
+          - name: uf
+            description: Unidade federativa do beneficiario (2 letras)
+          - name: codigo_municipio_siafi
+            description: Codigo SIAFI do municipio
+          - name: nome_municipio
+            description: Nome do municipio
+          - name: cpf_favorecido
+            description: CPF ja mascarado na fonte (frequentemente vazio)
+          - name: valor_parcela
+            description: Valor pago na parcela, em reais (decimal 10,2)
+          - name: nis_hash
+            description: SHA-256(NIS + salt) — identificador pseudonimizado

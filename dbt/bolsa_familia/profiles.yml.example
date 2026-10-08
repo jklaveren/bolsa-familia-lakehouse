@@ -1,0 +1,16 @@
+# Copie para ~/.dbt/profiles.yml (ou defina DBT_PROFILES_DIR=./dbt/bolsa_familia)
+# e preencha as variaveis de ambiente com as credenciais do seu workspace
+# Databricks (Free/Community Edition ou pago). Este arquivo em si nao tem
+# segredos — tudo vem de env_var em tempo de execucao — por isso pode ser
+# commitado e copiado direto para profiles.yml em CI.
+bolsa_familia:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: "{{ env_var('DATABRICKS_CATALOG', 'workspace') }}" # 'workspace' no Databricks Free Edition (sem Unity 'main'); ajuste se seu workspace usar outro catalogo
+      schema: bolsa_familia
+      host: "{{ env_var('DATABRICKS_HOST') }}" # ex: dbc-xxxxxxxx-xxxx.cloud.databricks.com
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}" # ex: /sql/1.0/warehouses/xxxxxxxxxxxxx
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+      threads: 4

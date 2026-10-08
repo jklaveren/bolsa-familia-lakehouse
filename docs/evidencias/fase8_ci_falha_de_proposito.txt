@@ -1,0 +1,9 @@
+dbt_test	dbt test	2026-09-16T13:35:54.8689784Z ^[[0m13:35:54  1 of 14 FAIL 1 _temp_prova_de_falha ............................................ [^[[31mFAIL 1^[[0m in 0.24s]
+dbt_test	dbt test	2026-09-16T13:35:54.8698398Z ^[[0m13:35:54  5 of 14 START test dbt_utils_unique_combination_of_columns_gold_pagamentos_uf_mes_uf__mes_referencia  [RUN]
+dbt_test	dbt test	2026-09-16T13:35:55.5039697Z ^[[0m13:35:55  5 of 14 PASS dbt_utils_unique_combination_of_columns_gold_pagamentos_uf_mes_uf__mes_referencia  [^[[32mPASS^[[0m in 0.63s]
+--
+dbt_test	dbt test	2026-09-16T13:35:58.2880653Z ^[[0m13:35:58  Done. PASS=13 WARN=0 ERROR=1 SKIP=0 TOTAL=14
+dbt_test	dbt test	2026-09-16T13:35:58.7286948Z ##[error]Process completed with exit code 1.
+dbt_test	Post Run actions/checkout@v4	﻿2026-09-16T13:35:58.7368789Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+
+Run: https://github.com/jklaveren/bolsa-familia-pipeline/actions/runs/35102858740 (conclusion: failure, 55s)

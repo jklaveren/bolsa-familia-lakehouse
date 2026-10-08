@@ -1,0 +1,155 @@
+{
+ "gerado_em": "2026-09-19T18:09:43.079321+00:00",
+ "competencias": [
+  "202601"
+ ],
+ "total_linhas_silver": 19479712,
+ "total_valor_silver": 12978539408.0,
+ "quarentena_linhas": 322,
+ "serie": [
+  {
+   "competencia": "202601",
+   "linhas_silver": 19479712,
+   "valor_total": 12978539408.0,
+   "linhas_bronze": 19480034
+  }
+ ],
+ "ultima_competencia": "202601",
+ "por_uf": [
+  {
+   "uf": "AC",
+   "linhas": 126577,
+   "valor": 90253400.0
+  },
+  {
+   "uf": "AL",
+   "linhas": 513229,
+   "valor": 347486130.0
+  },
+  {
+   "uf": "AM",
+   "linhas": 619165,
+   "valor": 443653751.0
+  },
+  {
+   "uf": "AP",
+   "linhas": 115756,
+   "valor": 82490092.0
+  },
+  {
+   "uf": "BA",
+   "linhas": 2364848,
+   "valor": 1557362986.0
+  },
+  {
+   "uf": "CE",
+   "linhas": 1383079,
+   "valor": 911130291.0
+  },
+  {
+   "uf": "DF",
+   "linhas": 165593,
+   "valor": 110927054.0
+  },
+  {
+   "uf": "ES",
+   "linhas": 295435,
+   "valor": 193411630.0
+  },
+  {
+   "uf": "GO",
+   "linhas": 459905,
+   "valor": 304872465.0
+  },
+  {
+   "uf": "MA",
+   "linhas": 1176650,
+   "valor": 812228999.0
+  },
+  {
+   "uf": "MG",
+   "linhas": 1475970,
+   "valor": 965172636.0
+  },
+  {
+   "uf": "MS",
+   "linhas": 189365,
+   "valor": 128679578.0
+  },
+  {
+   "uf": "MT",
+   "linhas": 221791,
+   "valor": 151057291.0
+  },
+  {
+   "uf": "PA",
+   "linhas": 1293410,
+   "valor": 892846351.0
+  },
+  {
+   "uf": "PB",
+   "linhas": 633760,
+   "valor": 421927350.0
+  },
+  {
+   "uf": "PE",
+   "linhas": 1506408,
+   "valor": 999735650.0
+  },
+  {
+   "uf": "PI",
+   "linhas": 558612,
+   "valor": 372117908.0
+  },
+  {
+   "uf": "PR",
+   "linhas": 566933,
+   "valor": 372650435.0
+  },
+  {
+   "uf": "RJ",
+   "linhas": 1482040,
+   "valor": 971732864.0
+  },
+  {
+   "uf": "RN",
+   "linhas": 476766,
+   "valor": 313603018.0
+  },
+  {
+   "uf": "RO",
+   "linhas": 127375,
+   "valor": 85179980.0
+  },
+  {
+   "uf": "RR",
+   "linhas": 76385,
+   "valor": 55512553.0
+  },
+  {
+   "uf": "RS",
+   "linhas": 554321,
+   "valor": 363818339.0
+  },
+  {
+   "uf": "SC",
+   "linhas": 215653,
+   "valor": 141436829.0
+  },
+  {
+   "uf": "SE",
+   "linhas": 360157,
+   "valor": 238707964.0
+  },
+  {
+   "uf": "SP",
+   "linhas": 2375165,
+   "valor": 1551134252.0
+  },
+  {
+   "uf": "TO",
+   "linhas": 145364,
+   "valor": 99409612.0
+  }
+ ]
+}

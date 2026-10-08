@@ -1,0 +1,9 @@
+=== Relatorio de qualidade de dados ===
+[PASS] schema_bronze: todas as colunas esperadas presentes
+[PASS] contagem_conservada: bronze=19480034 silver=19479712 quarentena=322 (diferenca esperada = deduplicacao: 0)
+[PASS] uf_valida: todas as UFs pertencem ao conjunto valido
+[PASS] valor_parcela_faixa_plausivel: 0 linhas com valor_parcela fora de (0, 5000.0)
+=== TODOS OS CHECKS PASSARAM ===
+
+
+[exited with code 0]

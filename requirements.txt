@@ -1,0 +1,14 @@
+# Fase 1-9: ingestão, transformação e testes (PySpark + Delta Lake + dbt)
+pyspark==3.5.1
+delta-spark==3.2.0
+dbt-databricks==1.8.4
+
+# utilitários
+requests==2.32.3
+python-dotenv==1.0.1
+pandas==2.1.4
+google-generativeai==0.8.3
+
+# testes
+pytest==8.3.2
+chispa==0.10.1

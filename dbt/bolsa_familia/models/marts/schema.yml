@@ -1,0 +1,48 @@
+version: 2
+
+models:
+  - name: gold_pagamentos_uf_mes
+    description: Total pago, valor medio e beneficiarios unicos, por UF e mes.
+    columns:
+      - name: uf
+        tests:
+          - not_null
+          - accepted_values:
+              values: [AC, AL, AP, AM, BA, CE, DF, ES, GO, MA, MT, MS, MG, PA,
+                       PB, PR, PE, PI, RJ, RN, RS, RO, RR, SC, SP, SE, TO]
+      - name: mes_referencia
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [uf, mes_referencia]
+
+  - name: gold_pagamentos_municipio_mes
+    description: Total pago, valor medio e beneficiarios unicos, por municipio e mes.
+    columns:
+      - name: codigo_municipio_siafi
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_municipios')
+              field: codigo_municipio_siafi
+      - name: uf
+        tests:
+          - not_null
+      - name: mes_referencia
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [codigo_municipio_siafi, mes_referencia]
+
+  - name: gold_distribuicao_valores
+    description: Histograma de faixas de valor pago (intervalos de R$50).
+    columns:
+      - name: faixa_inicio
+        tests:
+          - not_null
+          - unique
+      - name: qtd_parcelas
+        tests:
+          - not_null

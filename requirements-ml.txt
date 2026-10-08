@@ -1,0 +1,6 @@
+# Fase 10: comparação de modelos de previsão (série histórica)
+# Instalado separadamente do requirements.txt principal — só necessário a partir da Fase 10
+statsmodels==0.14.2
+tensorflow==2.17.0
+scikit-learn==1.5.1
+matplotlib>=3.9.2

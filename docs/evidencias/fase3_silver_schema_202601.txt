@@ -1,0 +1,11 @@
+SILVER COLUMNS: ['mes_competencia', 'mes_referencia', 'uf', 'codigo_municipio_siafi', 'nome_municipio', 'cpf_favorecido', 'valor_parcela', 'nis_hash']
+nome_favorecido em silver? False
+nis_favorecido em silver? False
++---------------+--------------+---+-------------+----------------------------------------------------------------+
+|mes_competencia|mes_referencia|uf |valor_parcela|nis_hash                                                        |
++---------------+--------------+---+-------------+----------------------------------------------------------------+
+|2026-01-01     |2026-01-01    |AC |700.00       |0008eb975abfff248ec7d10be90374db01765c81f576cf3dc1d9183052e14bf4|
+|2026-01-01     |2026-01-01    |AC |600.00       |e60c7bb3ed2cfa814dfadf6066d553f8ddc3314a2f1e0c26c14b8b0e78408af3|
+|2026-01-01     |2026-01-01    |AC |750.00       |0011009d21d936407ae4fc3cbc5079995b968a69dbdec3bc31abfa5cfa4f17de|
+|2026-01-01     |2026-01-01    |AC |375.00       |e622b69c611b1183b145874b96f214dbb14c5a1b9e0333f36e0596f92f4bfa59|
+|2026-01-01     |2026-01-01    |AC |600.00       |0011b0d8283e4b7c67b817f5f6d8756e94c7192afc4a395123cb10883223e307|

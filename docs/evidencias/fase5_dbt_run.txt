@@ -1,0 +1,24 @@
+02:16:51  Running with dbt=1.8.8
+02:16:56  Registered adapter: databricks=1.8.4
+02:16:58  Found 6 models, 13 data tests, 1 source, 701 macros
+02:16:58  
+02:17:15  Concurrency: 4 threads (target='dev')
+02:17:15  
+02:17:15  1 of 6 START sql view model bolsa_familia.stg_pagamentos ....................... [RUN]
+02:17:18  1 of 6 OK created sql view model bolsa_familia.stg_pagamentos .................. [OK in 3.00s]
+02:17:18  2 of 6 START sql table model bolsa_familia.gold_distribuicao_valores ........... [RUN]
+02:17:18  3 of 6 START sql table model bolsa_familia.gold_evolucao_temporal_nacional ..... [RUN]
+02:17:18  4 of 6 START sql table model bolsa_familia.gold_pagamentos_municipio_mes ....... [RUN]
+02:17:18  5 of 6 START sql table model bolsa_familia.gold_pagamentos_uf_mes .............. [RUN]
+02:17:36  2 of 6 OK created sql table model bolsa_familia.gold_distribuicao_valores ...... [OK in 18.12s]
+02:17:36  6 of 6 START sql view model bolsa_familia.stg_municipios ....................... [RUN]
+02:17:37  6 of 6 OK created sql view model bolsa_familia.stg_municipios .................. [OK in 0.81s]
+02:17:44  5 of 6 OK created sql table model bolsa_familia.gold_pagamentos_uf_mes ......... [OK in 25.78s]
+02:17:46  3 of 6 OK created sql table model bolsa_familia.gold_evolucao_temporal_nacional  [OK in 28.54s]
+02:17:46  4 of 6 OK created sql table model bolsa_familia.gold_pagamentos_municipio_mes .. [OK in 28.71s]
+02:17:49  
+02:17:49  Finished running 2 view models, 4 table models in 0 hours 0 minutes and 50.65 seconds (50.65s).
+02:17:49  
+02:17:49  Completed successfully
+02:17:49  
+02:17:49  Done. PASS=6 WARN=0 ERROR=0 SKIP=0 TOTAL=6
