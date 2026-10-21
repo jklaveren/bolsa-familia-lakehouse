@@ -11,7 +11,7 @@ GitHub Actions — com governança **LGPD** de verdade.
 | Métrica | Valor |
 |---|---|
 | Linhas processadas | 242M+ |
-| Testes dbt (schema + integridade) | 13 passando, com gate no CI |
+| Testes dbt (schema + integridade) | 13 passando (evidência em `docs/evidencias/`) · rodam no CI quando os secrets `DATABRICKS_*` estão configurados |
 | Camadas | bronze (raw) → silver (tipada, dedup, pseudonimizada) → gold (marts) |
 | Orquestração | DAG mensal Airflow |
 | Custo/performance | partitioning + z-order + broadcast joins |
@@ -55,6 +55,7 @@ Portal da Transparência (CSV mensal)
 ## Como reproduzir
 
 ```bash
+cp .env.example .env                      # edite as credenciais locais
 pip install -r requirements.txt
 bash scripts/download_historico.sh        # fonte oficial, ~GBs
 docker compose up -d                      # Airflow + serviços
@@ -63,13 +64,27 @@ dbt build --project-dir dbt/bolsa_familia
 terraform -chdir=infra init && terraform -chdir=infra validate
 ```
 
+> O `docker compose` exige `POSTGRES_PASSWORD` e `AIRFLOW_ADMIN_PASSWORD` no `.env`.
+> Para `terraform plan/apply`, defina `TF_VAR_airflow_admin_password` (ou `-var`).
+
+## CI
+
+- **python:** `pytest` em Python 3.11 com Java 17 (PySpark).
+- **terraform:** `validate` da infra local e da Azure (sem `apply`).
+- **dbt-parse:** `dbt deps` + `dbt parse` em todo push.
+- **dbt-test:** `dbt run` + `dbt test` (13 testes) automaticamente quando os secrets `DATABRICKS_*` estiverem configurados.
+
+Para habilitar o suite dbt no CI: **Settings → Secrets and variables → Actions** →
+secrets `DATABRICKS_HOST`, `DATABRICKS_HTTP_PATH`, `DATABRICKS_TOKEN`.
+
 ## Decisões técnicas
 
 - **Delta Lake, não Parquet puro:** ACID, time travel e merge — reprocesso a partir da bronze sem pedir a fonte de novo.
-- **dbt com gate:** merge quebrado não entra — 13 testes travam o CI.
+- **dbt com gate:** merge quebrado não entra — 13 testes travam o CI quando o job dbt está habilitado.
 - **LGPD desde a silver:** pseudonimização com salt + remoção de PII; PII nunca chega na gold.
 - **Lote primeiro:** streaming só onde há SLA — este pipeline é mensal por natureza da fonte.
 
 ## Autora
 
-Jessica Van Klaveren — Engenheira de Dados (Databricks · PySpark · Delta Lake · dbt · Airflow). São Leopoldo, RS.
+Jessica Van Klaveren — Engenheira de Plataforma de Dados · Finanças & Dados Regulados.
+Databricks · PySpark · Delta Lake · dbt · Airflow. São Leopoldo, RS.

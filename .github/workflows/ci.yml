@@ -12,18 +12,102 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup Java (necessario para PySpark)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -r requirements.txt
-      - run: python -m pytest tests/ -v
+          cache: pip
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Rodar testes
+        run: python -m pytest tests/ -v
 
   terraform:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: "1.5.0"
-      - run: terraform -chdir=infra init -backend=false
-      - run: terraform -chdir=infra validate
+          terraform_version: "1.9.8"
+
+      - name: Validar infra local
+        run: terraform -chdir=infra init -backend=false && terraform -chdir=infra validate
+
+      - name: Validar infra Azure (sem apply)
+        run: terraform -chdir=infra/azure init -backend=false && terraform -chdir=infra/azure validate
+
+  dbt-parse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar dbt-databricks
+        run: pip install dbt-databricks==1.8.4
+
+      - name: Preparar profile (sem segredos)
+        working-directory: dbt/bolsa_familia
+        run: cp profiles.yml.example profiles.yml
+
+      - name: dbt deps + parse
+        working-directory: dbt/bolsa_familia
+        env:
+          DATABRICKS_HOST: example.cloud.databricks.com
+          DATABRICKS_HTTP_PATH: /sql/1.0/warehouses/0000000000000000
+          DATABRICKS_TOKEN: dummy
+        run: dbt deps && dbt parse --profiles-dir .
+
+  dbt-test:
+    # Suite completo (run + 13 testes) automaticamente quando os secrets
+    # DATABRICKS_* estiverem configurados no repositorio.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar secrets do Databricks
+        id: secrets
+        env:
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: |
+          if [ -z "$DATABRICKS_TOKEN" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "enabled=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - if: steps.secrets.outputs.enabled == 'true'
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - if: steps.secrets.outputs.enabled == 'true'
+        name: Instalar dbt-databricks
+        run: pip install dbt-databricks==1.8.4
+
+      - if: steps.secrets.outputs.enabled == 'true'
+        name: Preparar profile (sem segredos)
+        working-directory: dbt/bolsa_familia
+        run: cp profiles.yml.example profiles.yml
+
+      - if: steps.secrets.outputs.enabled == 'true'
+        name: dbt run + dbt test
+        working-directory: dbt/bolsa_familia
+        env:
+          DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+          DATABRICKS_HTTP_PATH: ${{ secrets.DATABRICKS_HTTP_PATH }}
+          DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+        run: dbt deps && dbt run --profiles-dir . && dbt test --profiles-dir .

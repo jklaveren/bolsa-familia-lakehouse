@@ -58,7 +58,7 @@ resource "docker_container" "airflow_init" {
 
   env = [
     "AIRFLOW__CORE__EXECUTOR=LocalExecutor",
-    "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow",
+    "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${var.postgres_user}:${var.postgres_password}@postgres/${var.postgres_db}",
     "AIRFLOW__CORE__LOAD_EXAMPLES=false",
     "AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=false",
     "PYTHONPATH=/opt/airflow",
@@ -66,7 +66,7 @@ resource "docker_container" "airflow_init" {
 
   entrypoint = ["/bin/bash", "-c"]
   command = [
-    "airflow db migrate && airflow users create --username admin --password admin --firstname Jessica --lastname VanKlaveren --role Admin --email jehzinha@gmail.com"
+    "airflow db migrate && airflow users create --username ${var.airflow_admin_user} --password ${var.airflow_admin_password} --firstname ${var.airflow_admin_firstname} --lastname ${var.airflow_admin_lastname} --role Admin --email ${var.airflow_admin_email}"
   ]
 
   networks_advanced {
@@ -80,7 +80,7 @@ resource "docker_container" "airflow_webserver" {
 
   env = [
     "AIRFLOW__CORE__EXECUTOR=LocalExecutor",
-    "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow",
+    "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${var.postgres_user}:${var.postgres_password}@postgres/${var.postgres_db}",
     "AIRFLOW__CORE__LOAD_EXAMPLES=false",
     "AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=false",
     "PYTHONPATH=/opt/airflow",
@@ -111,7 +111,7 @@ resource "docker_container" "airflow_scheduler" {
 
   env = [
     "AIRFLOW__CORE__EXECUTOR=LocalExecutor",
-    "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow",
+    "AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://${var.postgres_user}:${var.postgres_password}@postgres/${var.postgres_db}",
     "AIRFLOW__CORE__LOAD_EXAMPLES=false",
     "AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=false",
     "PYTHONPATH=/opt/airflow",

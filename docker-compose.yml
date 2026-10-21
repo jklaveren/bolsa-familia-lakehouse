@@ -6,10 +6,10 @@ x-airflow-common: &airflow-common
     context: .
     dockerfile: Dockerfile.airflow
   env_file:
-    - .env # BOLSA_FAMILIA_PSEUDONYM_SALT, DATABRICKS_HOST, DATABRICKS_HTTP_PATH, DATABRICKS_TOKEN (nunca commitado)
+    - .env # credenciais locais + BOLSA_FAMILIA_PSEUDONYM_SALT + DATABRICKS_* (nunca commitado)
   environment:
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: "postgresql+psycopg2://${POSTGRES_USER:-airflow}:${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}@postgres/${POSTGRES_DB:-airflow}"
     AIRFLOW__CORE__LOAD_EXAMPLES: "false"
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: "false"
     AIRFLOW__API__AUTH_BACKENDS: "airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session"
@@ -28,13 +28,13 @@ services:
   postgres:
     image: postgres:16
     environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+      POSTGRES_USER: "${POSTGRES_USER:-airflow}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}"
+      POSTGRES_DB: "${POSTGRES_DB:-airflow}"
     volumes:
       - postgres-db:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "airflow"]
+      test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER:-airflow}"]
       interval: 5s
       retries: 5
 
@@ -43,7 +43,7 @@ services:
     entrypoint: /bin/bash
     command:
       - -c
-      - airflow db migrate && airflow users create --username admin --password admin --firstname Jessica --lastname VanKlaveren --role Admin --email jehzinha@gmail.com
+      - airflow db migrate && airflow users create --username "${AIRFLOW_ADMIN_USER:-admin}" --password "${AIRFLOW_ADMIN_PASSWORD:?defina AIRFLOW_ADMIN_PASSWORD no .env}" --firstname "${AIRFLOW_ADMIN_FIRSTNAME:-Admin}" --lastname "${AIRFLOW_ADMIN_LASTNAME:-User}" --role Admin --email "${AIRFLOW_ADMIN_EMAIL:-admin@example.com}"
 
   airflow-webserver:
     <<: *airflow-common

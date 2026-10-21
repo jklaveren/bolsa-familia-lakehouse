@@ -24,6 +24,7 @@ logs/
 dbt/bolsa_familia/target/
 dbt/bolsa_familia/dbt_packages/
 dbt/bolsa_familia/logs/
+dbt/bolsa_familia/profiles.yml
 
 # Terraform (estado e cache nunca entram)
 .terraform/
@@ -39,3 +40,4 @@ credentials.json
 # MLflow local
 mlruns/
 mlruns-local/
+mlflow.db

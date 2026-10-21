@@ -35,7 +35,35 @@ variable "postgres_user" {
 }
 
 variable "postgres_password" {
-  type      = string
-  default   = "airflow"
-  sensitive = true
+  description = "Senha do Postgres local. Default apenas para docker local; sobrescreva em qualquer outro ambiente."
+  type        = string
+  default     = "airflow"
+  sensitive   = true
+}
+
+variable "airflow_admin_user" {
+  description = "Usuario admin local do Airflow."
+  type        = string
+  default     = "admin"
+}
+
+variable "airflow_admin_password" {
+  description = "Senha do admin local do Airflow. Defina via TF_VAR_airflow_admin_password ou -var."
+  type        = string
+  sensitive   = true
+}
+
+variable "airflow_admin_firstname" {
+  type    = string
+  default = "Admin"
+}
+
+variable "airflow_admin_lastname" {
+  type    = string
+  default = "User"
+}
+
+variable "airflow_admin_email" {
+  type    = string
+  default = "admin@example.com"
 }
