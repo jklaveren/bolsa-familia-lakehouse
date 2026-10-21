@@ -1,5 +1,7 @@
 # Lakehouse Databricks — Bolsa Família (242M+ linhas)
 
+[![CI](https://github.com/jklaveren/bolsa-familia-lakehouse/actions/workflows/ci.yml/badge.svg)](https://github.com/jklaveren/bolsa-familia-lakehouse/actions)
+
 Pipeline de engenharia de dados ponta a ponta sobre microdados públicos do
 Novo Bolsa Família (Portal da Transparência/CGU): ingestão em **PySpark**,
 **Delta Lake** bronze → silver → gold, modelagem **dbt** no **Databricks**,
