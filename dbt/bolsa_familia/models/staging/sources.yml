@@ -1,10 +1,14 @@
 version: 2
 
 sources:
+  # Schema e tabela vem do ambiente para que o CI possa apontar a mesma
+  # arvore de modelos para a amostra em DuckDB. Os padroes sao os valores
+  # de producao no Databricks -- sem env var, nada muda.
   - name: silver
-    schema: bolsa_familia
+    schema: "{{ env_var('DBT_SILVER_SCHEMA', 'bolsa_familia') }}"
     tables:
       - name: pagamentos
+        identifier: "{{ env_var('DBT_SILVER_TABLE', 'pagamentos') }}"
         description: >
           Tabela Delta da camada Silver — pagamentos do Novo Bolsa Familia,
           tipados, deduplicados e com NIS/nome pseudonimizados (Secao 7.2).

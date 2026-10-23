@@ -14,3 +14,12 @@ bolsa_familia:
       http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}" # ex: /sql/1.0/warehouses/xxxxxxxxxxxxx
       token: "{{ env_var('DATABRICKS_TOKEN') }}"
       threads: 4
+
+    # Alvo do CI: a mesma arvore de modelos roda em DuckDB, em memoria de
+    # arquivo, sobre a amostra de seeds/. Serve para os 13 testes rodarem em
+    # toda PR sem depender de credencial de workspace.
+    ci:
+      type: duckdb
+      path: "{{ env_var('DBT_DUCKDB_PATH', 'target/ci.duckdb') }}"
+      schema: main
+      threads: 4

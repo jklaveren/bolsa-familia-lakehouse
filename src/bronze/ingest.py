@@ -5,6 +5,7 @@ negocio, mantem todas as colunas como string (schema-on-read) e grava em Delta
 Lake particionado por mes_competencia. Nenhuma linha e descartada nesta camada.
 """
 import argparse
+from datetime import date, timedelta
 import zipfile
 from pathlib import Path
 
@@ -145,15 +146,30 @@ def ingest_bronze(spark: SparkSession, competencia: str) -> DataFrame:
     return df_raw
 
 
+def competencia_padrao() -> str:
+    """Mes anterior em AAAAMM.
+
+    A CGU publica a competencia nos primeiros dias do mes seguinte, entao
+    uma execucao agendada sem argumento quer sempre o mes que acabou. Deixa
+    o job mensal rodar sem alguem preencher a data na mao, e o reprocesso de
+    uma competencia antiga continua sendo `--competencia AAAAMM`.
+    """
+    hoje = date.today()
+    ultimo_do_mes_passado = hoje.replace(day=1) - timedelta(days=1)
+    return ultimo_do_mes_passado.strftime("%Y%m")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Ingestao Bronze — Novo Bolsa Familia")
-    parser.add_argument("--competencia", required=True, help="AAAAMM, ex: 202601")
+    parser.add_argument("--competencia", default="",
+                        help="AAAAMM, ex: 202601. Vazio = mes anterior.")
     args = parser.parse_args()
+    competencia = args.competencia.strip() or competencia_padrao()
 
     spark = get_spark("bronze-ingest")
-    df = ingest_bronze(spark, args.competencia)
+    df = ingest_bronze(spark, competencia)
     total = df.count()
-    print(f"Bronze OK — competencia={args.competencia} linhas={total}")
+    print(f"Bronze OK — competencia={competencia} linhas={total}")
     spark.stop()
 
 

@@ -41,3 +41,6 @@ credentials.json
 mlruns/
 mlruns-local/
 mlflow.db
+
+# Banco local do alvo ci do dbt
+dbt/bolsa_familia/*.duckdb

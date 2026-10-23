@@ -45,6 +45,9 @@ jobs:
       - name: Validar infra Azure (sem apply)
         run: terraform -chdir=infra/azure init -backend=false && terraform -chdir=infra/azure validate
 
+      - name: Validar job do Databricks Workflows (sem apply)
+        run: terraform -chdir=infra/databricks init -backend=false && terraform -chdir=infra/databricks validate
+
   dbt-parse:
     runs-on: ubuntu-latest
     steps:
@@ -70,9 +73,43 @@ jobs:
           DATABRICKS_TOKEN: dummy
         run: dbt deps && dbt parse --profiles-dir .
 
-  dbt-test:
-    # Suite completo (run + 13 testes) automaticamente quando os secrets
-    # DATABRICKS_* estiverem configurados no repositorio.
+  dbt-duckdb:
+    # Os 13 testes rodam de verdade em toda PR: a mesma arvore de modelos
+    # executa em DuckDB sobre a amostra de seeds/, sem credencial de
+    # workspace. O que se prova aqui nao e' volume -- e' que as regras
+    # continuam valendo: unicidade de chave, integridade referencial,
+    # dominio de UF e a soma da Gold batendo com a Silver.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar dbt-duckdb
+        run: pip install dbt-duckdb==1.9.2
+
+      - name: Preparar profile (sem segredos)
+        working-directory: dbt/bolsa_familia
+        run: cp profiles.yml.example profiles.yml
+
+      - name: dbt seed + run + test
+        working-directory: dbt/bolsa_familia
+        env:
+          # Aponta a source para o seed; no Databricks os padroes valem.
+          DBT_SILVER_SCHEMA: main
+          DBT_SILVER_TABLE: seed_pagamentos_amostra
+        run: |
+          dbt deps
+          dbt seed  --target ci --profiles-dir .
+          dbt run   --target ci --profiles-dir .
+          dbt test  --target ci --profiles-dir .
+
+  dbt-databricks:
+    # Suite contra o workspace real, quando os secrets DATABRICKS_* existem.
+    # Complementa o job acima: la' a regra, aqui o volume.
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

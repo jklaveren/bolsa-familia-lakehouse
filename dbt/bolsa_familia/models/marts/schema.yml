@@ -46,3 +46,13 @@ models:
       - name: qtd_parcelas
         tests:
           - not_null
+
+  - name: gold_evolucao_temporal_nacional
+    description: Serie temporal de valor pago e beneficiarios, nacional e por UF.
+    columns:
+      - name: mes_referencia
+        tests:
+          - not_null
+      - name: valor_total
+        tests:
+          - not_null

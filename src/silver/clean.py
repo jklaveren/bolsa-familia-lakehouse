@@ -6,6 +6,7 @@ grava duas saidas Delta: a Silver valida (particionada por uf) e a quarentena
 (linhas sem NIS, preservadas para investigacao — nunca descartadas em silencio).
 """
 import argparse
+from datetime import date, timedelta
 from typing import TYPE_CHECKING, Any
 
 try:
@@ -94,13 +95,28 @@ def clean_silver(spark: SparkSession, competencia: str, salt: str) -> tuple[Data
     return silver, sem_nis
 
 
+def competencia_padrao() -> str:
+    """Mes anterior em AAAAMM.
+
+    A CGU publica a competencia nos primeiros dias do mes seguinte, entao
+    uma execucao agendada sem argumento quer sempre o mes que acabou. Deixa
+    o job mensal rodar sem alguem preencher a data na mao, e o reprocesso de
+    uma competencia antiga continua sendo `--competencia AAAAMM`.
+    """
+    hoje = date.today()
+    ultimo_do_mes_passado = hoje.replace(day=1) - timedelta(days=1)
+    return ultimo_do_mes_passado.strftime("%Y%m")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Limpeza Silver — Novo Bolsa Familia")
-    parser.add_argument("--competencia", required=True, help="AAAAMM, ex: 202601")
+    parser.add_argument("--competencia", default="",
+                        help="AAAAMM, ex: 202601. Vazio = mes anterior.")
     args = parser.parse_args()
+    competencia = args.competencia.strip() or competencia_padrao()
 
     spark = get_spark("silver-clean")
-    clean_silver(spark, args.competencia, get_salt())
+    clean_silver(spark, competencia, get_salt())
     spark.stop()
 
 

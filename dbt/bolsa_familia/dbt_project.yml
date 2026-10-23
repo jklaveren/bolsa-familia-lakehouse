@@ -20,3 +20,24 @@ models:
       +materialized: view
     marts:
       +materialized: table
+
+seeds:
+  bolsa_familia:
+    seed_pagamentos_amostra:
+      +column_types:
+        mes_competencia: date
+        mes_referencia: date
+        uf: varchar
+        codigo_municipio_siafi: varchar
+        nome_municipio: varchar
+        cpf_favorecido: varchar
+        valor_parcela: "decimal(10,2)"
+        nis_hash: varchar
+
+# Teste que falha grava as linhas culpadas numa tabela em vez de so' somer
+# no log: e' o que permite abrir o caso depois, em SQL, sem reproduzir a
+# execucao. Esta e' a camada de observabilidade do projeto.
+data_tests:
+  bolsa_familia:
+    +store_failures: true
+    +schema: qualidade
