@@ -4,6 +4,9 @@ data/bronze/
 data/silver/
 data/gold/
 *.csv
+# A amostra do CI e' versionada de proposito: sem ela os testes dbt
+# nao tem o que rodar na PR.
+!dbt/bolsa_familia/seeds/*.csv
 *.zip
 !data/.gitkeep
 
