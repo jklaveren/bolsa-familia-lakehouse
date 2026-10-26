@@ -19,10 +19,10 @@ desde a camada silver.
 
 | Métrica | Valor | Evidência |
 |---|---|---|
-| Linhas processadas | **242M+** (soma das competências rodadas) | [`docs/evidencias/fase6_quality_report_202601.txt`](docs/evidencias/fase6_quality_report_202601.txt) |
+| Linhas processadas | **242M+** (12 competências, mar/2023 a jan/2026) | [`docs/evidencias/silver_contagem_por_competencia.txt`](docs/evidencias/silver_contagem_por_competencia.txt) |
 | Volume por competência | **19.480.034** linhas na bronze (jan/2026) | [`docs/evidencias/fase6_quality_report_202601.txt`](docs/evidencias/fase6_quality_report_202601.txt) |
 | Testes dbt | **18/18 PASS** em toda PR, sem credencial (DuckDB) | [`docs/evidencias/ci_dbt_duckdb.txt`](docs/evidencias/ci_dbt_duckdb.txt) |
-| Testes contra o workspace | **13/13 PASS** no Databricks | [`docs/evidencias/fase5_dbt_test.txt`](docs/evidencias/fase5_dbt_test.txt) |
+| Testes contra o workspace | **13/13 PASS** no Databricks (execução de 16/09, antes da suíte ampliar para 18) | [`docs/evidencias/fase5_dbt_test.txt`](docs/evidencias/fase5_dbt_test.txt) |
 | Gate de CI funcionando | teste quebrado **derruba o build** (exit 1) | [`docs/evidencias/fase8_ci_falha_de_proposito.txt`](docs/evidencias/fase8_ci_falha_de_proposito.txt) |
 | Camadas | bronze (raw) → silver (tipada, dedup, pseudonimizada) → gold (marts) | [`docs/evidencias/fase3_silver_schema_202601.txt`](docs/evidencias/fase3_silver_schema_202601.txt) |
 | Qualidade | relatório de checagens por competência | [`docs/evidencias/fase6_quality_report_202601.txt`](docs/evidencias/fase6_quality_report_202601.txt) |
@@ -49,7 +49,7 @@ Portal da Transparência (CSV mensal)
 ┌──────────┐   ┌──────────┐   ┌───────────────────┐
 │  BRONZE  │──▶│  SILVER  │──▶│  GOLD (dbt)       │
 │  PySpark │   │ tipagem  │   │ staging → marts   │
-│  Delta   │   │ dedup    │   │ 13 testes         │
+│  Delta   │   │ dedup    │   │ 18 testes         │
 │  raw     │   │ pseudo.  │   │ Star Schema       │
 └──────────┘   └──────────┘   └───────────────────┘
      ▲               ▲                    ▲
@@ -60,12 +60,14 @@ A DAG `bolsa_familia_pipeline` encadeia `ingest_bronze → clean_silver → dbt_
 dbt_test → notify`, com reprocesso de qualquer competência já publicada via
 `{"competencia": "AAAAMM"}` no trigger manual.
 
-**Em produção o mesmo encadeamento roda como job do Databricks Workflows**
-([`infra/databricks/`](infra/databricks/)), declarado em Terraform: cluster efêmero para
-as tarefas PySpark, SQL Warehouse para o dbt, agendamento mensal, retry e alerta nativos.
-O job clona a branch a cada execução, então o que roda em produção é exatamente o que
-está no repositório. O Docker Compose continua servindo o desenvolvimento local, onde
-subir a stack inteira em um comando vale mais do que depender de nuvem.
+**O mesmo encadeamento está declarado como job do Databricks Workflows**
+([`infra/databricks/`](infra/databricks/)), em Terraform: cluster efêmero para as tarefas
+PySpark, SQL Warehouse para o dbt, agendamento mensal, retry e alerta nativos. O job
+clona a branch a cada execução, então o que roda é exatamente o que está no repositório.
+Ele é validado com `terraform validate` no CI, mas ainda não foi aplicado (ver
+[Limitações](#limitações-e-o-que-eu-faria-diferente)). O Docker Compose continua servindo
+o desenvolvimento local, onde subir a stack inteira em um comando vale mais do que
+depender de nuvem.
 
 ## Como reproduzir
 
@@ -90,7 +92,7 @@ terraform -chdir=infra init && terraform -chdir=infra validate
 | `src/bronze`, `src/silver` | ingestão e limpeza em PySpark |
 | `src/quality` | checagens de qualidade |
 | `src/forecast` | comparação VAR × rede neural (MLflow) |
-| `dbt/bolsa_familia` | modelos staging → marts + 13 testes |
+| `dbt/bolsa_familia` | modelos staging → marts + 18 testes |
 | `dags/` | DAG mensal do Airflow |
 | `infra/`, `infra/azure` | Terraform local e Azure (ADLS Gen2 + Databricks) |
 | `infra/databricks` | Job mensal em Databricks Workflows (Terraform) |
@@ -104,8 +106,9 @@ terraform -chdir=infra init && terraform -chdir=infra validate
 
 - **Delta Lake, não Parquet puro:** ACID, time travel e merge permitem reprocessar a
   partir da bronze sem pedir a fonte de novo.
-- **dbt com gate:** merge quebrado não entra — os 13 testes travam o CI quando o job
-  dbt está habilitado.
+- **dbt com gate:** merge quebrado não entra — os 18 testes travam o CI em toda PR
+  (DuckDB sobre a amostra versionada); com os secrets `DATABRICKS_*`, a mesma suíte
+  roda contra o workspace.
 - **LGPD desde a silver:** pseudonimização com salt e remoção de PII; a gold nunca
   recebe identificador pessoal.
 - **Partição por competência:** toda consulta filtra por mês, o que reduz leitura em
@@ -116,7 +119,8 @@ terraform -chdir=infra init && terraform -chdir=infra validate
 
 Transparência faz parte do projeto — o que **não** está pronto:
 
-- Processei **12 das 14 competências** disponíveis; as 35 do histórico completo ainda
+- Processei **12 competências** (mar/2023 a jan/2026, amostragem trimestral). Da
+  amostra, faltam set/2024, mar/2026 e jun/2026; as 35 do histórico completo ainda
   não rodaram.
 - A amostra do CI é **sintética e pequena** (600 linhas, gerada por
   `scripts/gerar_amostra_ci.py`). Ela prova as regras, não a performance — os números de

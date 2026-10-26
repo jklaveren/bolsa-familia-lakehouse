@@ -1,0 +1,28 @@
+Contagem de linhas da Silver por competencia (Delta local, amostragem trimestral)
+Gerado em 2026-09-16 com PySpark sobre data/silver/pagamentos:
+
+  spark.read.format("delta").load("data/silver/pagamentos")
+       .groupBy("mes_competencia").count().orderBy("mes_competencia")
+
++---------------+--------+
+|mes_competencia|linhas  |
++---------------+--------+
+|2023-03-01     |20419189|
+|2023-06-01     |20699025|
+|2023-09-01     |20692791|
+|2023-12-01     |20970208|
+|2024-03-01     |20533711|
+|2024-06-01     |20553653|
+|2024-12-01     |20669437|
+|2025-03-01     |20431369|
+|2025-06-01     |19847094|
+|2025-09-01     |19104201|
+|2025-12-01     |18670429|
+|2026-01-01     |19479712|
++---------------+--------+
+
+TOTAL: 242070819
+
+Competencias da amostra trimestral ainda nao processadas: 2024-09, 2026-03, 2026-06.
+Cada linha e' Silver (apos quarentena de linhas sem NIS e deduplicacao);
+o Bronze de 2026-01 tem 19.480.034 linhas (ver fase6_quality_report_202601.txt).
